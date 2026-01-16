@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: dev-project
+  namespace: argocd
+spec:
+  description: Only allow deploys to dev namespace on one cluster
+
+  # Which Git repos apps are allowed to use
+  sourceRepos:
+    - https://github.com/gititc778/gitops
+
+  # Where apps are allowed to deploy
+  destinations:
+    - server: https://192.168.111.132:8443
+      namespace: dev
+
+  # What cluster-level resources are allowed. This will allow the app to create a namespace and pv. Both are cluster level
+  # resources
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: ""
+      kind: PersistentVolume
+
+  # What namespace-level resources are allowed
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"
